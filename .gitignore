@@ -1,0 +1,47 @@
+# Byte-compiled / build artifacts
+*.class
+*.dex
+
+# Gradle
+.gradle/
+build/
+app/build/
+**/build/
+!**/src/**/build/
+gradle-app.setting
+!gradle-wrapper.jar
+.gradletasknamecache
+
+# Local configuration (contains SDK path, machine-specific)
+local.properties
+
+# Android Studio / IntelliJ
+.idea/
+*.iml
+*.ipr
+*.iws
+.navigation/
+captures/
+.externalNativeBuild/
+.cxx/
+*.hprof
+
+# Keystores (never commit signing keys!)
+*.jks
+*.keystore
+
+# APK / AAB output
+*.apk
+*.aab
+*.dm
+
+# Log files
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Claude / Cursor local settings (machine-specific, not for sharing)
+.claude/
+.cursor/

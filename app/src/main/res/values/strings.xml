@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">KeywordSpotter</string>
+    <string name="app_title">Офлайн-детектор ключевого слова</string>
+
+    <string name="status_idle">Не слушает</string>
+    <string name="status_listening">Слушает…</string>
+    <string name="status_preparing">Подготовка…</string>
+    <string name="status_need_permissions">Нужны разрешения</string>
+
+    <string name="button_start">Начать прослушивание</string>
+    <string name="button_stop">Остановить прослушивание</string>
+
+    <string name="offline_hint">Всё распознавание речи происходит локально на устройстве, без интернета</string>
+
+    <string name="alert_channel_name">Обнаружение ключевого слова</string>
+    <string name="alert_channel_description">Уведомления при обнаружении ключевого слова в речи</string>
+    <string name="alert_notification_title">Ключевое слово обнаружено</string>
+    <string name="alert_notification_text">В распознанной речи обнаружено ключевое слово</string>
+
+    <string name="service_channel_name">Фоновое прослушивание</string>
+    <string name="service_channel_description">Показывает, что идёт офлайн-распознавание речи</string>
+    <string name="service_notification_title">Прослушивание активно</string>
+    <string name="service_notification_text">Идёт офлайн-распознавание речи</string>
+</resources>

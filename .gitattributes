@@ -1,0 +1,24 @@
+# Normalize line endings: store as LF in the repo, let Git handle
+# conversion to the platform's native ending in the working copy.
+* text=auto eol=lf
+
+# Binary files - never touch line endings
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.jks binary
+*.keystore binary
+*.apk binary
+*.aab binary
+*.so binary
+*.jar binary
+*.mdl binary
+*.fst binary
+*.ie binary
+*.mat binary
+*.dubm binary
+*.int binary
+*.conf binary
+*.stats binary
