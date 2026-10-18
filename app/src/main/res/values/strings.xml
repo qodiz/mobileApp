@@ -15,11 +15,16 @@
 
     <string name="pairing_code_label">Код из 6 цифр</string>
     <string name="button_pair">Привязать</string>
-    <string name="pairing_hint">Нажмите «Привязать». На экране беспроводной отладки откройте «Привязать устройство с помощью кода» и не закрывайте это окно. Шесть цифр впишите в уведомление ClearCalls в шторке. Порт вводить не нужно. Телефон должен быть в Wi‑Fi. Оставьте включённой «Отладка по USB»: после этого голос собеседника разбирается и без Wi‑Fi, до перезагрузки телефона.</string>
-    <string name="adb_need_wifi">Связь с отладкой пропала. На минуту включите Wi‑Fi, приложение восстановит её само. «Отладка по USB» должна быть включена.</string>
+    <string name="pairing_hint">Нажмите «Привязать». На экране беспроводной отладки откройте «Привязать устройство с помощью кода» и не закрывайте это окно. Шесть цифр введите в панели «Отладка по Wi‑Fi» вверху экрана. Порт вводить не нужно. Телефон должен быть в Wi‑Fi. Оставьте включённой «Отладку по USB». Код нужен только в первый раз: после перезагрузки приложение само включает беспроводную отладку тем же ключом. Сразу после включения на минуту нужен Wi‑Fi, дальше его можно выключить.</string>
+    <string name="adb_need_wifi">Связь с отладкой пропала. На минуту включите Wi‑Fi, приложение восстановит её само тем же сохранённым ключом. «Отладка по USB» должна быть включена.</string>
     <string name="adb_need_usb">Привязка есть. Включите «Отладка по USB», иначе без Wi‑Fi голос собеседника не разобрать.</string>
-    <string name="pairing_notification_title">Привязка отладки</string>
-    <string name="pairing_notification_text">Введите 6 цифр с экрана беспроводной отладки</string>
+    <string name="pairing_notification_title">Отладка по Wi‑Fi</string>
+    <string name="pairing_notification_text">Введите 6 цифр в панели вверху экрана</string>
+    <string name="pairing_curtain_hint">6 цифр с экрана привязки</string>
+    <string name="pairing_curtain_working">Привязка…</string>
+    <string name="pairing_enter_code">Ввести 6 цифр</string>
+    <string name="pairing_channel_name">Отладка по Wi‑Fi</string>
+    <string name="pairing_overlay_notification">Панель ввода кода поверх всех окон</string>
     <string name="pairing_success">Отладка привязана</string>
     <string name="pairing_failed">Не удалось привязать</string>
 
@@ -34,7 +39,7 @@
     <string name="accessibility_service_description">Нужно, чтобы приложение слышало речь во время телефонного звонка. Без этой службы Android глушит микрофон на время разговора. Приложение не читает экран и не управляет другими программами.</string>
     <string name="accessibility_hint">В списке служб включите ClearCalls. На Android 13 и новее для установки не из магазина сначала откройте сведения о приложении и нажмите «Разрешить ограниченные настройки».</string>
 
-    <string name="offline_hint">Приложение само слушает собеседника на каждом звонке. После одной привязки Wi‑Fi не нужен, пока телефон не перезагрузят. Экран можно закрыть.</string>
+    <string name="offline_hint">Приложение само слушает собеседника на каждом звонке. Код отладки вводится один раз, после перезагрузки он не спрашивается. Сразу после включения телефона на минуту нужен Wi‑Fi. Экран можно закрыть.</string>
 
     <string name="curtain_title">это мошенник</string>
     <string name="curtain_ended">Абонент определен как мошенник и система завершила звонок</string>
@@ -50,4 +55,48 @@
     <string name="service_notification_title">ClearCalls работает</string>
     <string name="service_notification_text">Ждёт звонок. Захват включится сам</string>
     <string name="service_notification_listening">Идёт звонок, слушает собеседника</string>
+
+    <string name="setup_danger">Вы пока в опасности, пройдите донастройку</string>
+    <string name="setup_safe">Вы теперь в безопасности</string>
+    <string name="setup_safe_hint">Защита включена. На звонке предупреждение появится само. Экран можно закрыть.</string>
+    <string name="setup_title">Путь к защите</string>
+    <string name="setup_level">Уровень %1$d из %2$d</string>
+    <string name="setup_swipe_next">Свайпните влево — следующий уровень</string>
+    <string name="setup_swipe_locked">Сначала закройте этот уровень</string>
+    <string name="setup_next">Дальше</string>
+    <string name="setup_app_settings">Открыть настройки приложения</string>
+
+    <string name="setup_wifi_title">Подключите Wi‑Fi</string>
+    <string name="setup_wifi_body">Телефон должен быть в Wi‑Fi. Иначе код отладки не дойдёт, и защита не включится.</string>
+    <string name="setup_wifi_button">Открыть Wi‑Fi</string>
+    <string name="setup_wifi_ready">Wi‑Fi есть</string>
+    <string name="setup_wifi_missing">Wi‑Fi не подключён</string>
+
+    <string name="setup_debug_title">Включите отладку</string>
+    <string name="setup_debug_body">Включите «Отладку по USB». Кнопка «Привязать» открывает страницу «Отладка по Wi‑Fi», а сверху, поверх настроек, остаётся панель для 6 цифр. Системное окно не закрывайте.</string>
+    <string name="setup_debug_usb_off">Отладка по USB ещё выключена</string>
+    <string name="setup_debug_usb_on">Отладка по USB включена</string>
+    <string name="setup_debug_pair_off">Беспроводная отладка ещё не привязана</string>
+    <string name="setup_debug_pair_on">Беспроводная отладка привязана</string>
+    <string name="setup_debug_usb_button">Открыть настройки разработчика</string>
+
+    <string name="setup_permissions_title">Дайте разрешения</string>
+    <string name="setup_permissions_body">Разрешите всё, что система спросит: микрофон, звонки и уведомления. Без этого разговор не виден.</string>
+    <string name="setup_permissions_button">Разрешить</string>
+    <string name="setup_perm_mic">Микрофон</string>
+    <string name="setup_perm_phone">Состояние звонка</string>
+    <string name="setup_perm_answer">Завершение звонка</string>
+    <string name="setup_perm_notifications">Уведомления</string>
+
+    <string name="setup_overlay_title">Шторка поверх звонка</string>
+    <string name="setup_overlay_body">Разрешите показ поверх других окон. Предупреждение появится прямо во время разговора.</string>
+    <string name="setup_overlay_button">Разрешить шторку</string>
+
+    <string name="setup_a11y_title">Служба защиты</string>
+    <string name="setup_a11y_body">В списке специальных возможностей включите ClearCalls. Только эта служба может держать панель кода поверх настроек. На Android 13 и новее сначала откройте сведения о приложении и нажмите «Разрешить ограниченные настройки».</string>
+    <string name="setup_a11y_button">Открыть специальные возможности</string>
+
+    <string name="setup_battery_title">Не усыплять защиту</string>
+    <string name="setup_battery_body">Разрешите работу без ограничений батареи. Иначе телефон выключит защиту в фоне.</string>
+    <string name="setup_battery_button">Разрешить фон</string>
 </resources>

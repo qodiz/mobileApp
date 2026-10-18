@@ -17,10 +17,12 @@ object NotificationHelper {
 
     const val ALERT_CHANNEL_ID = "keyword_alert_channel"
     const val SERVICE_CHANNEL_ID = "listener_service_channel"
+    const val PAIRING_CHANNEL_ID = "wifi_debug_pairing"
 
     private const val ALERT_NOTIFICATION_ID = 1001
     const val SERVICE_NOTIFICATION_ID = 2001
     const val PAIRING_NOTIFICATION_ID = 2002
+    const val PAIRING_OVERLAY_NOTIFICATION_ID = 2003
     const val PAIRING_REMOTE_INPUT = "pairing_code"
 
     fun createChannels(context: Context) {
@@ -45,8 +47,18 @@ object NotificationHelper {
             description = context.getString(R.string.service_channel_description)
         }
 
+        val pairingChannel = NotificationChannel(
+            PAIRING_CHANNEL_ID,
+            context.getString(R.string.pairing_channel_name),
+            NotificationManager.IMPORTANCE_HIGH
+        ).apply {
+            description = context.getString(R.string.pairing_notification_text)
+            setShowBadge(false)
+        }
+
         manager.createNotificationChannel(alertChannel)
         manager.createNotificationChannel(serviceChannel)
+        manager.createNotificationChannel(pairingChannel)
     }
 
     fun buildServiceNotification(context: Context, text: String): android.app.Notification {
@@ -66,6 +78,16 @@ object NotificationHelper {
             .build()
     }
 
+    fun buildPairingOverlayNotification(context: Context): android.app.Notification {
+        return NotificationCompat.Builder(context, SERVICE_CHANNEL_ID)
+            .setSmallIcon(android.R.drawable.ic_dialog_info)
+            .setContentTitle(context.getString(R.string.pairing_notification_title))
+            .setContentText(context.getString(R.string.pairing_overlay_notification))
+            .setOngoing(true)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .build()
+    }
+
     /** Уведомление с полем ввода: код можно вписать, не закрывая системное окно привязки. */
     fun showPairingPrompt(context: Context) {
         val input = RemoteInput.Builder(PAIRING_REMOTE_INPUT)
@@ -79,22 +101,27 @@ object NotificationHelper {
         )
         val action = NotificationCompat.Action.Builder(
             android.R.drawable.ic_input_add,
-            context.getString(R.string.button_pair),
+            context.getString(R.string.pairing_enter_code),
             pending
         ).addRemoteInput(input).build()
 
-        val notification = NotificationCompat.Builder(context, SERVICE_CHANNEL_ID)
+        val notification = NotificationCompat.Builder(context, PAIRING_CHANNEL_ID)
             .setSmallIcon(android.R.drawable.ic_dialog_info)
             .setContentTitle(context.getString(R.string.pairing_notification_title))
             .setContentText(context.getString(R.string.pairing_notification_text))
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setCategory(NotificationCompat.CATEGORY_STATUS)
             .setOngoing(true)
             .addAction(action)
             .build()
-        NotificationManagerCompat.from(context).notify(PAIRING_NOTIFICATION_ID, notification)
+        try {
+            NotificationManagerCompat.from(context).notify(PAIRING_NOTIFICATION_ID, notification)
+        } catch (_: SecurityException) {
+        }
     }
 
     fun showPairingResult(context: Context, success: Boolean, detail: String?) {
-        val notification = NotificationCompat.Builder(context, SERVICE_CHANNEL_ID)
+        val notification = NotificationCompat.Builder(context, PAIRING_CHANNEL_ID)
             .setSmallIcon(
                 if (success) android.R.drawable.ic_dialog_info
                 else android.R.drawable.ic_dialog_alert
@@ -107,7 +134,10 @@ object NotificationHelper {
             .setContentText(detail ?: "")
             .setAutoCancel(true)
             .build()
-        NotificationManagerCompat.from(context).notify(PAIRING_NOTIFICATION_ID, notification)
+        try {
+            NotificationManagerCompat.from(context).notify(PAIRING_NOTIFICATION_ID, notification)
+        } catch (_: SecurityException) {
+        }
     }
 
     fun showKeywordDetected(context: Context) {
