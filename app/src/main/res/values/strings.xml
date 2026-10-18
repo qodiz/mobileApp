@@ -1,25 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">KeywordSpotter</string>
-    <string name="app_title">Офлайн-детектор ключевого слова</string>
+    <string name="app_name">ClearCalls</string>
+    <string name="app_title">Слушает собеседника и предупреждает</string>
 
-    <string name="status_idle">Не слушает</string>
-    <string name="status_listening">Слушает…</string>
+    <string name="status_idle">Работает в фоне. На звонке захват включится сам</string>
+    <string name="status_starting">Запускается…</string>
+    <string name="status_listening">Слушает собеседника…</string>
     <string name="status_preparing">Подготовка…</string>
-    <string name="status_need_permissions">Нужны разрешения</string>
+    <string name="status_need_permissions">Нужны уведомления</string>
+    <string name="status_need_accessibility">Нужна служба специальных возможностей</string>
+    <string name="status_need_pairing">Нужна привязка беспроводной отладки</string>
+    <string name="status_need_overlay">Нужна шторка поверх звонка</string>
+    <string name="status_paired">Отладка привязана</string>
 
-    <string name="button_start">Начать прослушивание</string>
-    <string name="button_stop">Остановить прослушивание</string>
+    <string name="pairing_code_label">Код из 6 цифр</string>
+    <string name="button_pair">Привязать</string>
+    <string name="pairing_hint">Нажмите «Привязать». На экране беспроводной отладки откройте «Привязать устройство с помощью кода» и не закрывайте это окно. Шесть цифр впишите в уведомление ClearCalls в шторке. Порт вводить не нужно. Телефон должен быть в Wi‑Fi. Оставьте включённой «Отладка по USB»: после этого голос собеседника разбирается и без Wi‑Fi, до перезагрузки телефона.</string>
+    <string name="adb_need_wifi">Связь с отладкой пропала. На минуту включите Wi‑Fi, приложение восстановит её само. «Отладка по USB» должна быть включена.</string>
+    <string name="adb_need_usb">Привязка есть. Включите «Отладка по USB», иначе без Wi‑Fi голос собеседника не разобрать.</string>
+    <string name="pairing_notification_title">Привязка отладки</string>
+    <string name="pairing_notification_text">Введите 6 цифр с экрана беспроводной отладки</string>
+    <string name="pairing_success">Отладка привязана</string>
+    <string name="pairing_failed">Не удалось привязать</string>
 
-    <string name="offline_hint">Всё распознавание речи происходит локально на устройстве, без интернета</string>
+    <string name="button_notifications">Разрешить звонки и уведомления</string>
+    <string name="permissions_hint">Так приложение видит начало любого звонка и остаётся в фоне. На сам звонок кнопку нажимать не нужно.</string>
+    <string name="button_overlay">Разрешить шторку</string>
+    <string name="overlay_hint">Разрешите показ поверх других окон. Если собеседник скажет «ФСБ», полэкрана закроет надпись «это мошенник», затем сообщение, что звонок завершён.</string>
+    <string name="button_start">Слушать собеседника</string>
+    <string name="button_stop">Остановить</string>
+    <string name="button_enable_accessibility">Открыть специальные возможности</string>
 
-    <string name="alert_channel_name">Обнаружение ключевого слова</string>
-    <string name="alert_channel_description">Уведомления при обнаружении ключевого слова в речи</string>
-    <string name="alert_notification_title">Ключевое слово обнаружено</string>
-    <string name="alert_notification_text">В распознанной речи обнаружено ключевое слово</string>
+    <string name="accessibility_service_description">Нужно, чтобы приложение слышало речь во время телефонного звонка. Без этой службы Android глушит микрофон на время разговора. Приложение не читает экран и не управляет другими программами.</string>
+    <string name="accessibility_hint">В списке служб включите ClearCalls. На Android 13 и новее для установки не из магазина сначала откройте сведения о приложении и нажмите «Разрешить ограниченные настройки».</string>
 
-    <string name="service_channel_name">Фоновое прослушивание</string>
-    <string name="service_channel_description">Показывает, что идёт офлайн-распознавание речи</string>
-    <string name="service_notification_title">Прослушивание активно</string>
-    <string name="service_notification_text">Идёт офлайн-распознавание речи</string>
+    <string name="offline_hint">Приложение само слушает собеседника на каждом звонке. После одной привязки Wi‑Fi не нужен, пока телефон не перезагрузят. Экран можно закрыть.</string>
+
+    <string name="curtain_title">это мошенник</string>
+    <string name="curtain_ended">Абонент определен как мошенник и система завершила звонок</string>
+    <string name="curtain_safe">вы теперь в безопасности</string>
+
+    <string name="alert_channel_name">Предупреждение о звонке</string>
+    <string name="alert_channel_description">Шторка, когда собеседник говорит «ФСБ» или «полиция»</string>
+    <string name="alert_notification_title">это мошенник</string>
+    <string name="alert_notification_text">Звонок будет завершён</string>
+
+    <string name="service_channel_name">Прослушивание собеседника</string>
+    <string name="service_channel_description">Показывает, что приложение слушает голос собеседника</string>
+    <string name="service_notification_title">ClearCalls работает</string>
+    <string name="service_notification_text">Ждёт звонок. Захват включится сам</string>
+    <string name="service_notification_listening">Идёт звонок, слушает собеседника</string>
 </resources>

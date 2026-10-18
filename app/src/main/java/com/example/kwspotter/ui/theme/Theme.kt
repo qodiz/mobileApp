@@ -14,7 +14,7 @@ private val DarkColors = darkColorScheme()
 private val LightColors = lightColorScheme()
 
 @Composable
-fun KeywordSpotterTheme(
+fun ClearCallsTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit

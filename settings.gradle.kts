@@ -15,5 +15,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "KeywordSpotter"
+rootProject.name = "ClearCalls"
 include(":app")

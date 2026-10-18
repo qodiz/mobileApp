@@ -40,6 +40,14 @@ android {
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "META-INF/DEPENDENCIES"
+            excludes += "META-INF/LICENSE"
+            excludes += "META-INF/LICENSE.txt"
+            excludes += "META-INF/NOTICE"
+            excludes += "META-INF/NOTICE.txt"
+            excludes += "META-INF/*.SF"
+            excludes += "META-INF/*.DSA"
+            excludes += "META-INF/*.RSA"
         }
         jniLibs {
             useLegacyPackaging = true
@@ -71,6 +79,14 @@ dependencies {
     // Offline speech recognition (Vosk)
     implementation("com.alphacephei:vosk-android:0.3.47")
     implementation("net.java.dev.jna:jna:5.13.0@aar")
+
+    // Клиент беспроводной отладки: привязка по коду и shell на этом же телефоне.
+    // sun-security-android должен попасть в APK: на новых прошивках классов
+    // android.sun.security в системе уже нет, и привязка падает с NoClassDefFoundError.
+    implementation("com.github.MuntashirAkon:libadb-android:3.1.1")
+    implementation("com.github.MuntashirAkon:sun-security-android:1.1")
+    implementation("org.lsposed.hiddenapibypass:hiddenapibypass:6.1")
+    implementation("org.conscrypt:conscrypt-android:2.5.3")
 
     debugImplementation("androidx.compose.ui:ui-tooling")
 }

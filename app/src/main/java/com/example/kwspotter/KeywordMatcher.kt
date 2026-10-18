@@ -1,18 +1,15 @@
 package com.example.kwspotter
 
 /**
- * Fuzzy detector for the keyword "ФСБ" inside a stream of recognized Russian text.
+ * Ищет в распознанном тексте «ФСБ» и «полиция».
  *
- * Vosk's small Russian model does not have a dedicated grammar entry for abbreviations,
- * so it tends to spell the word out phonetically ("эф эс бэ", "эфэсбэ") or mis-recognize
- * it slightly ("ефсб", "фэсбэ"). We normalize the recognizer output and compare sliding
- * windows of consecutive words against a set of reference spellings using Levenshtein
- * distance, so small recognition errors still count as a hit.
+ * Маленькая модель Vosk часто пишет аббревиатуру по звукам («эф эс бэ», «эфэсбэ»)
+ * или чуть мимо («ефсб»). Такие варианты сравниваются окном из соседних слов.
+ * «Полиция» и её формы ловятся по основе «полиц», чтобы не спутать со словом «политика».
  */
 object KeywordMatcher {
 
-    // Reference spellings, already normalized (lowercase, no spaces/punctuation).
-    private val REFERENCE_VARIANTS = listOf(
+    private val FSB_VARIANTS = listOf(
         "фсб",
         "эфэсбэ",
         "эфсб",
@@ -22,6 +19,8 @@ object KeywordMatcher {
         "эфесбе",
         "афсб"
     )
+
+    private val POLICE_STEMS = listOf("полиц", "палиц")
 
     // How many consecutive recognized words to glue together before comparing
     // (covers cases like "эф эс бэ" being emitted as three separate tokens).
@@ -40,29 +39,45 @@ object KeywordMatcher {
         return filtered.trim().replace(Regex("\\s+"), " ")
     }
 
-    /** Returns true if any fuzzy variant of the keyword appears in [text]. */
-    fun containsKeyword(text: String): Boolean {
+    fun containsKeyword(text: String): Boolean = match(text) != null
+
+    /**
+     * Подпись для шторки: «ФСБ», «полиция» или обе, если они в одной фразе.
+     * null — ни одного слова нет.
+     */
+    fun match(text: String): String? {
         val normalized = normalize(text)
-        if (normalized.isEmpty()) return false
+        if (normalized.isEmpty()) return null
 
         val words = normalized.split(" ").filter { it.isNotBlank() }
-        if (words.isEmpty()) return false
+        if (words.isEmpty()) return null
 
+        val police = words.any { word -> POLICE_STEMS.any { stem -> word.contains(stem) } }
+        val fsb = containsFsb(words)
+        return when {
+            police && fsb -> "ФСБ и полиция"
+            police -> "полиция"
+            fsb -> "ФСБ"
+            else -> null
+        }
+    }
+
+    private fun containsFsb(words: List<String>): Boolean {
         for (start in words.indices) {
             var candidate = ""
             for (windowSize in 1..MAX_WINDOW) {
                 val end = start + windowSize - 1
                 if (end >= words.size) break
                 candidate += words[end]
-                if (matchesAnyVariant(candidate)) return true
+                if (matchesFsb(candidate)) return true
             }
         }
         return false
     }
 
-    private fun matchesAnyVariant(candidate: String): Boolean {
+    private fun matchesFsb(candidate: String): Boolean {
         if (candidate.length < 3) return false
-        for (variant in REFERENCE_VARIANTS) {
+        for (variant in FSB_VARIANTS) {
             val tolerance = if (variant.length <= 4) 1 else 2
             // Skip obviously unrelated lengths to avoid cheap false positives on long words.
             if (kotlin.math.abs(candidate.length - variant.length) > tolerance + 1) continue
