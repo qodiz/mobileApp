@@ -480,8 +480,8 @@ class ListenerService : Service() {
         Log.d(TAG, "raw hypothesis ($key): '$text'")
         val keyword = KeywordMatcher.match(text) ?: return
         val now = SystemClock.elapsedRealtime()
-        if (keyword.contains("ФСБ") && endingCall.compareAndSet(false, true)) {
-            Log.i(TAG, "Ending call after: $text")
+        if (endingCall.compareAndSet(false, true)) {
+            Log.i(TAG, "Ending call after $keyword: $text")
             showHangupCurtains()
             AdbSession.endCall(applicationContext)
         }
