@@ -35,7 +35,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import org.json.JSONArray
 import org.json.JSONObject
 import org.vosk.Model
 import org.vosk.Recognizer
@@ -56,28 +55,8 @@ class ListenerService : Service() {
         private const val TAG = "ListenerService"
         private const val SAMPLE_RATE = 16000.0f
         private val PCM_MAGIC = "KWSPCM1\n".toByteArray(Charsets.US_ASCII)
+        private val WHITESPACE = Regex("\\s+")
         private const val MAX_RETRIES = 3
-
-        private val GRAMMAR = listOf(
-            "фсб",
-            "эф эс бэ",
-            "эфэсбэ",
-            "эфсб",
-            "ефсб",
-            "эфэсб",
-            "фэсбэ",
-            "эфесбе",
-            "афсб",
-            "полиция",
-            "полиции",
-            "полицию",
-            "полицией",
-            "полицейский",
-            "полицейская",
-            "полицейские",
-            "палиция",
-            "[unk]"
-        )
 
         private val _state = MutableStateFlow(State.STOPPED)
         val state = _state.asStateFlow()
@@ -126,6 +105,9 @@ class ListenerService : Service() {
     private var retries = 0
     private var armed = false
     private val capturing = AtomicBoolean(false)
+    private val callTranscript = StringBuilder()
+    private val callModelText = StringBuilder()
+    private var scamClassifier: ScamClassifier? = null
 
     private var telephony: TelephonyManager? = null
     private var modernCallback: TelephonyCallback? = null
@@ -314,7 +296,8 @@ class ListenerService : Service() {
         }
         if (error != null) throw IllegalStateException(error)
         val loadedModel = Model(ModelManager.modelDir(applicationContext).absolutePath)
-        val loadedRecognizer = Recognizer(loadedModel, SAMPLE_RATE, JSONArray(GRAMMAR).toString())
+        // Без ограничивающей грамматики: иначе Vosk подставляет «мошеннические» слова из списка.
+        val loadedRecognizer = Recognizer(loadedModel, SAMPLE_RATE)
         model = loadedModel
         recognizer = loadedRecognizer
         _state.value = State.WATCHING
@@ -348,6 +331,9 @@ class ListenerService : Service() {
     private suspend fun runCapture() {
         val activeRecognizer = recognizer ?: return
         activeRecognizer.reset()
+        callTranscript.clear()
+        callModelText.clear()
+        scamClassifier = scamClassifier ?: ScamClassifier.get(applicationContext)
         lastAlertAt = 0L
         endingCall.set(false)
         _state.value = State.LOADING_MODEL
@@ -478,10 +464,19 @@ class ListenerService : Service() {
             ""
         }
         Log.d(TAG, "raw hypothesis ($key): '$text'")
-        val keyword = KeywordMatcher.match(text) ?: return
+        val (sessionText, modelText) = accumulateCallText(text, key == "text")
+        val keyword = KeywordMatcher.matchStrong(text) ?: KeywordMatcher.matchStrong(sessionText)
+        val ml = scamClassifier?.classify(modelText)
+        if (ml != null) {
+            Log.d(TAG, "scam p=${"%.3f".format(ml.probability)} words=${sessionText.split(" ").count { it.isNotBlank() }} session='$modelText'")
+        }
+
+        if (!ScamHangupGate.shouldTreatAsScam(keyword, ml, sessionText)) return
+
         val now = SystemClock.elapsedRealtime()
         if (endingCall.compareAndSet(false, true)) {
-            Log.i(TAG, "Ending call after $keyword: $text")
+            val reason = keyword ?: "ML ${"%.0f".format((ml?.probability ?: 0.0) * 100)}%"
+            Log.i(TAG, "Ending call after $reason: $sessionText")
             showHangupCurtains()
             AdbSession.endCall(applicationContext)
         }
@@ -491,8 +486,34 @@ class ListenerService : Service() {
         }
         if (now - lastAlertAt < 8_000) return
         lastAlertAt = now
-        Log.i(TAG, "Keyword detected in: $text")
+        Log.i(TAG, "Scam signal: keyword=$keyword ml=${ml?.probability}")
         AlertCurtain.show(applicationContext)
+    }
+
+    /**
+     * Копит речь собеседника за текущий звонок.
+     * Первая строка — для ключевых слов и порога длины, без дефисов.
+     * Вторая — для модели: дефис внутри слова сохраняется, как при обучении.
+     * Промежуточная гипотеза в буфер не пишется, пока Vosk не закроет фразу.
+     */
+    private fun accumulateCallText(raw: String, finalized: Boolean): Pair<String, String> {
+        val spoken = appendTranscript(callTranscript, KeywordMatcher.normalize(raw), finalized)
+        val modelText = appendTranscript(callModelText, raw.trim().replace(WHITESPACE, " "), finalized)
+        return spoken to modelText
+    }
+
+    private fun appendTranscript(buffer: StringBuilder, chunk: String, finalized: Boolean): String {
+        if (chunk.isEmpty()) return buffer.toString()
+        if (finalized) {
+            if (buffer.isNotEmpty()) buffer.append(' ')
+            buffer.append(chunk)
+            return buffer.toString()
+        }
+        return buildString {
+            append(buffer)
+            if (isNotEmpty()) append(' ')
+            append(chunk)
+        }
     }
 
     /** Красная шторка 2 секунды, затем зелёная 3 секунды. */
